@@ -1,4 +1,5 @@
 import { Client, InMemoryTransport } from "@modelcontextprotocol/client";
+import * as z from "zod/v4";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { GrocyClient } from "../src/api/client.js";
@@ -27,6 +28,35 @@ describe("Grocy MCP server", () => {
     expect(TOOL_DEFINITIONS.map(({ name }) => name)).toContain(
       "grocy_post_tasks_by_taskid_complete",
     );
+  });
+
+  it("uses closed Grocy option sets as enums and leaves instance-defined values open", () => {
+    const listEntities = TOOL_DEFINITIONS.find(
+      ({ name }) => name === "grocy_get_objects_by_entity",
+    )?.inputSchema;
+    expect(listEntities?.safeParse({ entity: "products" }).success).toBe(true);
+    expect(listEntities?.safeParse({ entity: "api_keys" }).success).toBe(false);
+
+    const file = TOOL_DEFINITIONS.find(
+      ({ name }) => name === "grocy_get_files_by_group_by_filename",
+    )?.inputSchema;
+    expect(
+      file?.safeParse({ group: "productpictures", fileName: "item.jpg" })
+        .success,
+    ).toBe(true);
+    expect(
+      file?.safeParse({ group: "unknown", fileName: "item.jpg" }).success,
+    ).toBe(false);
+
+    const createObject = TOOL_DEFINITIONS.find(
+      ({ name }) => name === "grocy_post_objects_by_entity",
+    )?.inputSchema;
+    if (!createObject) {
+      throw new Error("Expected generic create-object tool definition");
+    }
+    const publicSchema = JSON.stringify(z.toJSONSchema(createObject));
+    expect(publicSchema).toContain('"adaptive"');
+    expect(publicSchema).toContain('"yearly"');
   });
 
   it("keeps paths encoded, query fields separate, and JSON bodies intact", () => {

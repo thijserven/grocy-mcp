@@ -123,7 +123,43 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     "GET",
     "/objects/{entity}",
     z.object({
-      entity: z.unknown().describe("A valid entity name"),
+      entity: z
+        .enum([
+          "products",
+          "chores",
+          "product_barcodes",
+          "batteries",
+          "locations",
+          "quantity_units",
+          "quantity_unit_conversions",
+          "shopping_list",
+          "shopping_lists",
+          "shopping_locations",
+          "recipes",
+          "recipes_pos",
+          "recipes_nestings",
+          "tasks",
+          "task_categories",
+          "product_groups",
+          "equipment",
+          "userfields",
+          "userentities",
+          "userobjects",
+          "meal_plan",
+          "stock_log",
+          "stock",
+          "stock_current_locations",
+          "chores_log",
+          "meal_plan_sections",
+          "products_last_purchased",
+          "products_average_price",
+          "quantity_unit_conversions_resolved",
+          "recipes_pos_resolved",
+          "battery_charge_cycles",
+          "product_barcodes_view",
+          "permission_hierarchy",
+        ])
+        .describe("A valid entity name"),
       "query[]": z
         .array(z.string())
         .describe(
@@ -155,7 +191,32 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     "POST",
     "/objects/{entity}",
     z.object({
-      entity: z.unknown().describe("A valid entity name"),
+      entity: z
+        .enum([
+          "products",
+          "chores",
+          "product_barcodes",
+          "batteries",
+          "locations",
+          "quantity_units",
+          "quantity_unit_conversions",
+          "shopping_list",
+          "shopping_lists",
+          "shopping_locations",
+          "recipes",
+          "recipes_pos",
+          "recipes_nestings",
+          "tasks",
+          "task_categories",
+          "product_groups",
+          "equipment",
+          "userfields",
+          "userentities",
+          "userobjects",
+          "meal_plan",
+          "meal_plan_sections",
+        ])
+        .describe("A valid entity name"),
       body: z
         .union([
           z.object({
@@ -260,7 +321,15 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
             name: z.string().describe("Grocy name.").optional(),
             description: z.string().describe("Grocy description.").optional(),
             period_type: z
-              .enum(["manually", "hourly", "daily", "weekly", "monthly"])
+              .enum([
+                "manually",
+                "hourly",
+                "daily",
+                "weekly",
+                "monthly",
+                "yearly",
+                "adaptive",
+              ])
               .describe("Grocy period type.")
               .optional(),
             period_config: z
@@ -458,7 +527,43 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     "GET",
     "/objects/{entity}/{objectId}",
     z.object({
-      entity: z.unknown().describe("A valid entity name"),
+      entity: z
+        .enum([
+          "products",
+          "chores",
+          "product_barcodes",
+          "batteries",
+          "locations",
+          "quantity_units",
+          "quantity_unit_conversions",
+          "shopping_list",
+          "shopping_lists",
+          "shopping_locations",
+          "recipes",
+          "recipes_pos",
+          "recipes_nestings",
+          "tasks",
+          "task_categories",
+          "product_groups",
+          "equipment",
+          "userfields",
+          "userentities",
+          "userobjects",
+          "meal_plan",
+          "stock_log",
+          "stock",
+          "stock_current_locations",
+          "chores_log",
+          "meal_plan_sections",
+          "products_last_purchased",
+          "products_average_price",
+          "quantity_unit_conversions_resolved",
+          "recipes_pos_resolved",
+          "battery_charge_cycles",
+          "product_barcodes_view",
+          "permission_hierarchy",
+        ])
+        .describe("A valid entity name"),
       objectId: z
         .number()
         .int()
@@ -472,7 +577,32 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     "PUT",
     "/objects/{entity}/{objectId}",
     z.object({
-      entity: z.unknown().describe("A valid entity name"),
+      entity: z
+        .enum([
+          "products",
+          "chores",
+          "product_barcodes",
+          "batteries",
+          "locations",
+          "quantity_units",
+          "quantity_unit_conversions",
+          "shopping_list",
+          "shopping_lists",
+          "shopping_locations",
+          "recipes",
+          "recipes_pos",
+          "recipes_nestings",
+          "tasks",
+          "task_categories",
+          "product_groups",
+          "equipment",
+          "userfields",
+          "userentities",
+          "userobjects",
+          "meal_plan",
+          "meal_plan_sections",
+        ])
+        .describe("A valid entity name"),
       objectId: z
         .number()
         .int()
@@ -581,7 +711,15 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
             name: z.string().describe("Grocy name.").optional(),
             description: z.string().describe("Grocy description.").optional(),
             period_type: z
-              .enum(["manually", "hourly", "daily", "weekly", "monthly"])
+              .enum([
+                "manually",
+                "hourly",
+                "daily",
+                "weekly",
+                "monthly",
+                "yearly",
+                "adaptive",
+              ])
               .describe("Grocy period type.")
               .optional(),
             period_config: z
@@ -779,7 +917,33 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     "DELETE",
     "/objects/{entity}/{objectId}",
     z.object({
-      entity: z.unknown().describe("A valid entity name"),
+      entity: z
+        .enum([
+          "products",
+          "chores",
+          "product_barcodes",
+          "batteries",
+          "locations",
+          "quantity_units",
+          "quantity_unit_conversions",
+          "shopping_list",
+          "shopping_lists",
+          "shopping_locations",
+          "recipes",
+          "recipes_pos",
+          "recipes_nestings",
+          "tasks",
+          "task_categories",
+          "product_groups",
+          "equipment",
+          "api_keys",
+          "userfields",
+          "userentities",
+          "userobjects",
+          "meal_plan",
+          "meal_plan_sections",
+        ])
+        .describe("A valid entity name"),
       objectId: z
         .number()
         .int()
