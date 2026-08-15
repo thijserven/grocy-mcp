@@ -104,15 +104,15 @@ For Streamable HTTP, set `GROCY_MCP_AUTH_TOKEN`, run `node dist/http-entry.js`, 
 
 ## Configuration
 
-| Variable               | Required  | Description                            |
-| ---------------------- | --------- | -------------------------------------- |
-| `GROCY_BASE_URL`       | yes       | Grocy origin (HTTPS except localhost)  |
-| `GROCY_API_KEY`        | yes       | Grocy API key, sent in `GROCY-API-KEY` |
-| `GROCY_TIMEOUT_MS`     | no        | Upstream timeout, default `15000`      |
-| `GROCY_USER_AGENT`     | no        | Client identifier                      |
-| `GROCY_MCP_AUTH_TOKEN` | HTTP only | Bearer token required by `/mcp`        |
-| `GROCY_MCP_HOST`       | no        | HTTP bind host, default `0.0.0.0`      |
-| `GROCY_MCP_PORT`       | no        | HTTP port, default `3000`              |
+| Variable               | Required  | Description                                            |
+| ---------------------- | --------- | ------------------------------------------------------ |
+| `GROCY_BASE_URL`       | yes       | Grocy origin (HTTPS, localhost, or literal private IP) |
+| `GROCY_API_KEY`        | yes       | Grocy API key, sent in `GROCY-API-KEY`                 |
+| `GROCY_TIMEOUT_MS`     | no        | Upstream timeout, default `15000`                      |
+| `GROCY_USER_AGENT`     | no        | Client identifier                                      |
+| `GROCY_MCP_AUTH_TOKEN` | HTTP only | Bearer token required by `/mcp`                        |
+| `GROCY_MCP_HOST`       | no        | HTTP bind host, default `0.0.0.0`                      |
+| `GROCY_MCP_PORT`       | no        | HTTP port, default `3000`                              |
 
 ## Verification
 
