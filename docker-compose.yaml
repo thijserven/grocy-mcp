@@ -1,0 +1,16 @@
+name: grocy
+
+services:
+  grocy-mcp:
+    image: ${GROCY_MCP_IMAGE:?set GROCY_MCP_IMAGE to a reviewed OCI digest}
+    restart: unless-stopped
+    environment:
+      GROCY_MCP_AUTH_TOKEN: ${GROCY_MCP_AUTH_TOKEN:?set GROCY_MCP_AUTH_TOKEN}
+      GROCY_API_KEY: ${GROCY_API_KEY:?set GROCY_API_KEY}
+      GROCY_BASE_URL: ${GROCY_BASE_URL:?set GROCY_BASE_URL}
+      GROCY_TIMEOUT_MS: ${GROCY_TIMEOUT_MS:-15000}
+      GROCY_USER_AGENT: ${GROCY_USER_AGENT:-GrocyMCP/0.1 (+https://github.com/thijserven/grocy-mcp)}
+      GROCY_MCP_HOST: 0.0.0.0
+      GROCY_MCP_PORT: "3000"
+    ports:
+      - "${GROCY_MCP_BIND_ADDRESS:?set GROCY_MCP_BIND_ADDRESS}:3000"
