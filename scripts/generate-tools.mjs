@@ -3,11 +3,67 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 const spec = JSON.parse(readFileSync("openapi/grocy.openapi.json", "utf8"));
 const methods = new Set(["get", "post", "put", "delete"]);
 const components = spec.components ?? {};
+const exposedEntities = components.schemas?.ExposedEntity?.enum ?? [];
+const nonListableEntities =
+  components.schemas?.ExposedEntityNoListing?.enum ?? [];
+const nonEditableEntities = components.schemas?.ExposedEntityNoEdit?.enum ?? [];
+const nonDeletableEntities =
+  components.schemas?.ExposedEntityNoDelete?.enum ?? [];
+// ChoresService exposes these modes; upstream's OpenAPI omits yearly and adaptive.
+const chorePeriodTypes = [
+  "manually",
+  "hourly",
+  "daily",
+  "weekly",
+  "monthly",
+  "yearly",
+  "adaptive",
+];
+
+function generatedRuntimeSchema(reference) {
+  // OpenApiController generates these component schemas per Grocy instance.
+  // User-defined entities cannot be statically enumerated, so only closed
+  // controller-derived sets are emitted as enums.
+  if (
+    reference === "#/components/schemas/ExposedEntity_NotIncludingNotListable"
+  ) {
+    return {
+      type: "string",
+      enum: exposedEntities.filter(
+        (entity) => !nonListableEntities.includes(entity),
+      ),
+    };
+  }
+  if (
+    reference === "#/components/schemas/ExposedEntity_NotIncludingNotEditable"
+  ) {
+    return {
+      type: "string",
+      enum: exposedEntities.filter(
+        (entity) => !nonEditableEntities.includes(entity),
+      ),
+    };
+  }
+  if (
+    reference === "#/components/schemas/ExposedEntity_NotIncludingNotDeletable"
+  ) {
+    return {
+      type: "string",
+      enum: exposedEntities.filter(
+        (entity) => !nonDeletableEntities.includes(entity),
+      ),
+    };
+  }
+  return undefined;
+}
 
 function dereference(value) {
   if (!value || !value.$ref) return value ?? {};
   const [, , section, name] = value.$ref.split("/");
-  return dereference(components[section]?.[name]);
+  const resolved = components[section]?.[name];
+  return resolved
+    ? dereference(resolved)
+    : (generatedRuntimeSchema(value.$ref) ?? {});
 }
 
 function quoted(value) {
@@ -40,9 +96,11 @@ function zod(schema, description) {
     const required = new Set(source.required ?? []);
     const entries = Object.entries(properties).map(([name, property]) => {
       const field = dereference(property);
+      const constrainedField =
+        name === "period_type" ? { ...field, enum: chorePeriodTypes } : field;
       const fieldDescription =
-        field.description ?? `Grocy ${name.replaceAll("_", " ")}.`;
-      return `${quoted(name)}: ${zod(field, fieldDescription)}${required.has(name) ? "" : ".optional()"}`;
+        constrainedField.description ?? `Grocy ${name.replaceAll("_", " ")}.`;
+      return `${quoted(name)}: ${zod(constrainedField, fieldDescription)}${required.has(name) ? "" : ".optional()"}`;
     });
     output =
       entries.length > 0

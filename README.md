@@ -70,6 +70,10 @@ curl --fail http://127.0.0.1:3000/health
 
 Connect to `http://127.0.0.1:3000/mcp` using `Authorization: Bearer <GROCY_MCP_AUTH_TOKEN>`. To use a published image, set `GROCY_MCP_IMAGE` to a reviewed immutable digest and run `docker compose up --detach`.
 
+## Published image automation
+
+`.github/workflows/publish-container.yaml` builds and publishes the Docker image to GitHub Container Registry on every push to `main`, a `v*` tag, or manual dispatch. It publishes both `ghcr.io/<owner>/<repository>:latest` and `ghcr.io/<owner>/<repository>:sha-<commit>`. Deploy the SHA-tagged image or, preferably, resolve that tag to an OCI manifest digest before assigning `GROCY_MCP_IMAGE`. The workflow uses GitHub's scoped `GITHUB_TOKEN`; no separate registry secret is required. If the resulting GHCR package remains private, authenticate the deployment host with `docker login ghcr.io` using a token granted `read:packages`.
+
 ## MCP client configuration
 
 Build first:
