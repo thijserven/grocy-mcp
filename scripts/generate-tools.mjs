@@ -1,14 +1,92 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
-const spec = JSON.parse(readFileSync("openapi/grocy.openapi.json", "utf8"));
+/**
+ * @typedef {object} OpenApiSchema
+ * @property {string} [$ref]
+ * @property {string} [type]
+ * @property {string} [format]
+ * @property {string} [description]
+ * @property {unknown[]} [enum]
+ * @property {OpenApiSchema[]} [oneOf]
+ * @property {OpenApiSchema[]} [anyOf]
+ * @property {OpenApiSchema} [items]
+ * @property {Record<string, OpenApiSchema>} [properties]
+ * @property {string[]} [required]
+ * @property {boolean} [additionalProperties]
+ */
+
+/**
+ * @typedef {object} OpenApiParameter
+ * @property {string} [$ref]
+ * @property {string} [name]
+ * @property {string} [in]
+ * @property {string} [description]
+ * @property {boolean} [required]
+ * @property {OpenApiSchema} [schema]
+ */
+
+/**
+ * @typedef {object} OpenApiRequestBody
+ * @property {string} [$ref]
+ * @property {string} [description]
+ * @property {boolean} [required]
+ * @property {Record<string, { schema?: OpenApiSchema }>} [content]
+ */
+
+/**
+ * @typedef {object} OpenApiOperation
+ * @property {string} [$ref]
+ * @property {string} [summary]
+ * @property {string} [description]
+ * @property {OpenApiParameter[]} [parameters]
+ * @property {OpenApiRequestBody} [requestBody]
+ */
+
+/**
+ * @typedef {object} OpenApiPathItem
+ * @property {OpenApiOperation} [get]
+ * @property {OpenApiOperation} [put]
+ * @property {OpenApiOperation} [post]
+ * @property {OpenApiOperation} [delete]
+ * @property {OpenApiParameter[]} [parameters]
+ */
+
+/** @typedef {Record<string, Record<string, unknown>>} OpenApiComponents */
+
+/**
+ * @typedef {object} OpenApiSpec
+ * @property {OpenApiComponents} [components]
+ * @property {Record<string, OpenApiPathItem>} paths
+ */
+
+/**
+ * @typedef {object} CatalogEntry
+ * @property {string} method
+ * @property {string} name
+ * @property {string} path
+ * @property {string} summary
+ */
+
+/**
+ * @typedef {object} RefNode
+ * @property {string} [$ref]
+ */
+
+/** @type {unknown} */
+const parsedSpec = JSON.parse(
+  readFileSync("openapi/grocy.openapi.json", "utf8"),
+);
+const spec = /** @type {OpenApiSpec} */ (parsedSpec);
 const methods = new Set(["get", "post", "put", "delete"]);
+/** @type {OpenApiComponents} */
 const components = spec.components ?? {};
-const exposedEntities = components.schemas?.ExposedEntity?.enum ?? [];
-const nonListableEntities =
-  components.schemas?.ExposedEntityNoListing?.enum ?? [];
-const nonEditableEntities = components.schemas?.ExposedEntityNoEdit?.enum ?? [];
-const nonDeletableEntities =
-  components.schemas?.ExposedEntityNoDelete?.enum ?? [];
+const schemas = /** @type {Record<string, OpenApiSchema>} */ (
+  components.schemas ?? {}
+);
+const exposedEntities = schemas.ExposedEntity?.enum ?? [];
+const nonListableEntities = schemas.ExposedEntityNoListing?.enum ?? [];
+const nonEditableEntities = schemas.ExposedEntityNoEdit?.enum ?? [];
+const nonDeletableEntities = schemas.ExposedEntityNoDelete?.enum ?? [];
 // ChoresService exposes these modes; upstream's OpenAPI omits yearly and adaptive.
 const chorePeriodTypes = [
   "manually",
@@ -20,6 +98,10 @@ const chorePeriodTypes = [
   "adaptive",
 ];
 
+/**
+ * @param {string} reference
+ * @returns {OpenApiSchema | undefined}
+ */
 function generatedRuntimeSchema(reference) {
   // OpenApiController generates these component schemas per Grocy instance.
   // User-defined entities cannot be statically enumerated, so only closed
@@ -57,15 +139,24 @@ function generatedRuntimeSchema(reference) {
   return undefined;
 }
 
+/**
+ * @template {RefNode} T
+ * @param {T | undefined} value
+ * @returns {T}
+ */
 function dereference(value) {
-  if (!value || !value.$ref) return value ?? {};
-  const [, , section, name] = value.$ref.split("/");
-  const resolved = components[section]?.[name];
+  if (!value?.$ref) return /** @type {T} */ (value ?? {});
+  const [, , section = "", name = ""] = value.$ref.split("/");
+  const resolved = /** @type {T | undefined} */ (components[section]?.[name]);
   return resolved
     ? dereference(resolved)
-    : (generatedRuntimeSchema(value.$ref) ?? {});
+    : /** @type {T} */ (generatedRuntimeSchema(value.$ref) ?? {});
 }
 
+/**
+ * @param {unknown} value
+ * @returns {string}
+ */
 function quoted(value) {
   return JSON.stringify(value);
 }
@@ -81,6 +172,12 @@ const LOOSE_BODY_PATHS = new Set([
   "/objects/{entity}/{objectId}",
 ]);
 
+/**
+ * @param {OpenApiSchema | undefined} schema
+ * @param {string | undefined} [description]
+ * @param {boolean} [loose]
+ * @returns {string}
+ */
 function zod(schema, description, loose = false) {
   const source = dereference(schema);
   let output;
@@ -90,7 +187,7 @@ function zod(schema, description, loose = false) {
       ? `z.enum([${values}])`
       : `z.union([${source.enum.map((value) => `z.literal(${quoted(value)})`).join(", ")}])`;
   } else if (source.oneOf || source.anyOf) {
-    const variants = source.oneOf ?? source.anyOf;
+    const variants = source.oneOf ?? source.anyOf ?? [];
     output = `z.union([${variants.map((variant) => zod(variant, undefined, loose)).join(", ")}])`;
   } else if (source.type === "array") {
     output = `z.array(${zod(source.items ?? {})})`;
@@ -123,6 +220,11 @@ function zod(schema, description, loose = false) {
   return description ? `${output}.describe(${quoted(description)})` : output;
 }
 
+/**
+ * @param {string} method
+ * @param {string} path
+ * @returns {string}
+ */
 function identifier(method, path) {
   const suffix = path
     .replace(/^\//, "")
@@ -134,8 +236,14 @@ function identifier(method, path) {
   return `grocy_${method}_${suffix}`;
 }
 
+/** @type {string[]} */
 const definitions = [];
+/** @type {Map<string, CatalogEntry[]>} */
 const catalog = new Map();
+/**
+ * @param {string} path
+ * @returns {string}
+ */
 function categoryFor(path) {
   if (path.startsWith("/system")) return "System";
   if (
@@ -160,15 +268,19 @@ function categoryFor(path) {
 for (const [path, pathItem] of Object.entries(spec.paths)) {
   for (const [method, rawOperation] of Object.entries(pathItem)) {
     if (!methods.has(method)) continue;
-    const operation = dereference(rawOperation);
+    const operation = dereference(
+      /** @type {OpenApiOperation | undefined} */ (rawOperation),
+    );
     const parameters = [
       ...(pathItem.parameters ?? []),
       ...(operation.parameters ?? []),
     ].map(dereference);
+    /** @type {string[]} */
     const shape = [];
     for (const parameter of parameters) {
       const parameterDescription =
-        parameter.description ?? `${parameter.in} parameter sent to Grocy.`;
+        parameter.description ??
+        `${String(parameter.in)} parameter sent to Grocy.`;
       const expression = zod(parameter.schema ?? {}, parameterDescription);
       shape.push(
         `${quoted(parameter.name)}: ${expression}${parameter.required ? "" : ".optional()"}`,
@@ -222,12 +334,12 @@ writeFileSync("src/tools/definitions.ts", output);
 const markdown = [
   "# Grocy MCP tool catalog",
   "",
-  `Generated from the vendored Grocy OpenAPI specification (${definitions.length - 1} operations) plus the source-discovered OpenAPI serving endpoint. Do not edit manually; run \`npm run generate:tools\`.`,
+  `Generated from the vendored Grocy OpenAPI specification (${String(definitions.length - 1)} operations) plus the source-discovered OpenAPI serving endpoint. Do not edit manually; run \`npm run generate:tools\`.`,
   "",
   "Equipment, products, locations, shopping lists, recipes, quantity units, and other Grocy master-data entities use the generic `grocy_*_objects_by_entity` tools. Pass the supported entity name (for example `equipment` or `products`).",
   "",
   ...[...catalog.entries()].flatMap(([category, operations]) => [
-    `## ${category} (${operations.length})`,
+    `## ${category} (${String(operations.length)})`,
     "",
     "| Tool | Method | Grocy endpoint | Capability |",
     "| --- | --- | --- | --- |",
@@ -239,4 +351,4 @@ const markdown = [
   ]),
 ].join("\n");
 writeFileSync("docs/tool-catalog.md", markdown);
-console.error(`Generated ${definitions.length} Grocy MCP tools.`);
+console.error(`Generated ${String(definitions.length)} Grocy MCP tools.`);
