@@ -287,6 +287,51 @@
                       },
                       {
                         "$ref": "#/components/schemas/ProductBarcode"
+                      },
+                      {
+                        "$ref": "#/components/schemas/Recipe"
+                      },
+                      {
+                        "$ref": "#/components/schemas/RecipePos"
+                      },
+                      {
+                        "$ref": "#/components/schemas/RecipeNesting"
+                      },
+                      {
+                        "$ref": "#/components/schemas/Task"
+                      },
+                      {
+                        "$ref": "#/components/schemas/TaskCategory"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ProductGroup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/Equipment"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ShoppingList"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ShoppingLocation"
+                      },
+                      {
+                        "$ref": "#/components/schemas/QuantityUnitConversion"
+                      },
+                      {
+                        "$ref": "#/components/schemas/MealPlan"
+                      },
+                      {
+                        "$ref": "#/components/schemas/MealPlanSection"
+                      },
+                      {
+                        "$ref": "#/components/schemas/Userfield"
+                      },
+                      {
+                        "$ref": "#/components/schemas/Userentity"
+                      },
+                      {
+                        "$ref": "#/components/schemas/Userobject"
                       }
                     ]
                   }
@@ -360,6 +405,51 @@
                   },
                   {
                     "$ref": "#/components/schemas/ProductBarcode"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Recipe"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RecipePos"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RecipeNesting"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Task"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TaskCategory"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ProductGroup"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Equipment"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ShoppingList"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ShoppingLocation"
+                  },
+                  {
+                    "$ref": "#/components/schemas/QuantityUnitConversion"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MealPlan"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MealPlanSection"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Userfield"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Userentity"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Userobject"
                   }
                 ]
               }
@@ -451,6 +541,51 @@
                     },
                     {
                       "$ref": "#/components/schemas/ProductBarcode"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Recipe"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RecipePos"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RecipeNesting"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Task"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TaskCategory"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ProductGroup"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Equipment"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ShoppingList"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ShoppingLocation"
+                    },
+                    {
+                      "$ref": "#/components/schemas/QuantityUnitConversion"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MealPlan"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MealPlanSection"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Userfield"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Userentity"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Userobject"
                     }
                   ]
                 }
@@ -532,6 +667,51 @@
                   },
                   {
                     "$ref": "#/components/schemas/ProductBarcode"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Recipe"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RecipePos"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RecipeNesting"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Task"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TaskCategory"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ProductGroup"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Equipment"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ShoppingList"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ShoppingLocation"
+                  },
+                  {
+                    "$ref": "#/components/schemas/QuantityUnitConversion"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MealPlan"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MealPlanSection"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Userfield"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Userentity"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Userobject"
                   }
                 ]
               }
@@ -5639,6 +5819,362 @@
             "$ref": "#/components/schemas/TaskCategory"
           }
         }
+      },
+      "Recipe": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "row_created_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "picture_file_name": {
+            "type": "string"
+          },
+          "base_servings": {
+            "type": "integer"
+          },
+          "desired_servings": {
+            "type": "integer"
+          },
+          "not_check_shoppinglist": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "integer"
+          },
+          "userfields": {
+            "type": "object",
+            "description": "Key/value pairs of userfields"
+          }
+        }
+      },
+      "RecipePos": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "recipe_id": {
+            "type": "integer"
+          },
+          "product_id": {
+            "type": "integer"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "note": {
+            "type": "string"
+          },
+          "qu_id": {
+            "type": "integer"
+          },
+          "only_check_single_unit_in_stock": {
+            "type": "integer"
+          },
+          "ingredient_group": {
+            "type": "string"
+          },
+          "not_check_stock_fulfillment": {
+            "type": "integer"
+          },
+          "row_created_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "variable_amount": {
+            "type": "string"
+          },
+          "price_factor": {
+            "type": "number"
+          },
+          "round_up": {
+            "type": "integer"
+          },
+          "userfields": {
+            "type": "object",
+            "description": "Key/value pairs of userfields"
+          }
+        }
+      },
+      "RecipeNesting": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "recipe_id": {
+            "type": "integer"
+          },
+          "includes_recipe_id": {
+            "type": "integer"
+          },
+          "row_created_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "servings": {
+            "type": "integer"
+          },
+          "userfields": {
+            "type": "object",
+            "description": "Key/value pairs of userfields"
+          }
+        }
+      },
+      "ProductGroup": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "row_created_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "active": {
+            "type": "integer"
+          },
+          "userfields": {
+            "type": "object",
+            "description": "Key/value pairs of userfields"
+          }
+        }
+      },
+      "Equipment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "instruction_manual_file_name": {
+            "type": "string"
+          },
+          "row_created_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userfields": {
+            "type": "object",
+            "description": "Key/value pairs of userfields"
+          }
+        }
+      },
+      "ShoppingList": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "row_created_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userfields": {
+            "type": "object",
+            "description": "Key/value pairs of userfields"
+          }
+        }
+      },
+      "QuantityUnitConversion": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "from_qu_id": {
+            "type": "integer"
+          },
+          "to_qu_id": {
+            "type": "integer"
+          },
+          "factor": {
+            "type": "number"
+          },
+          "product_id": {
+            "type": "integer"
+          },
+          "row_created_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userfields": {
+            "type": "object",
+            "description": "Key/value pairs of userfields"
+          }
+        }
+      },
+      "MealPlan": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "day": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "recipe_id": {
+            "type": "integer"
+          },
+          "recipe_servings": {
+            "type": "integer"
+          },
+          "note": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "integer"
+          },
+          "product_amount": {
+            "type": "number"
+          },
+          "product_qu_id": {
+            "type": "integer"
+          },
+          "row_created_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "done": {
+            "type": "integer"
+          },
+          "section_id": {
+            "type": "integer"
+          },
+          "userfields": {
+            "type": "object",
+            "description": "Key/value pairs of userfields"
+          }
+        }
+      },
+      "MealPlanSection": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sort_number": {
+            "type": "integer"
+          },
+          "row_created_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "time_info": {
+            "type": "string"
+          },
+          "userfields": {
+            "type": "object",
+            "description": "Key/value pairs of userfields"
+          }
+        }
+      },
+      "Userfield": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "entity": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "show_as_column_in_tables": {
+            "type": "integer"
+          },
+          "row_created_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "config": {
+            "type": "string"
+          },
+          "sort_number": {
+            "type": "integer"
+          },
+          "input_required": {
+            "type": "integer"
+          },
+          "default_value": {
+            "type": "string"
+          }
+        }
+      },
+      "Userentity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "show_in_sidebar_menu": {
+            "type": "integer"
+          },
+          "icon_css_class": {
+            "type": "string"
+          },
+          "row_created_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Userobject": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "A user object of a user entity; its fields are defined by the user entity's userfields plus id and row_created_timestamp"
       },
       "DbChangedTimeResponse": {
         "type": "object",

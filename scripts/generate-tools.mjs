@@ -70,7 +70,18 @@ function quoted(value) {
   return JSON.stringify(value);
 }
 
-function zod(schema, description) {
+// The MCP SDK validates tool arguments with the generated zod schema and zod
+// objects strip unknown keys. The generic object endpoints accept any Grocy
+// entity, whose columns the vendored spec may not (fully) document, so their
+// request bodies must be loose objects that pass fields through to Grocy
+// unchanged; Grocy is the field validator and answers unknown columns with a
+// 400 error.
+const LOOSE_BODY_PATHS = new Set([
+  "/objects/{entity}",
+  "/objects/{entity}/{objectId}",
+]);
+
+function zod(schema, description, loose = false) {
   const source = dereference(schema);
   let output;
   if (Array.isArray(source.enum) && source.enum.length > 0) {
@@ -80,7 +91,7 @@ function zod(schema, description) {
       : `z.union([${source.enum.map((value) => `z.literal(${quoted(value)})`).join(", ")}])`;
   } else if (source.oneOf || source.anyOf) {
     const variants = source.oneOf ?? source.anyOf;
-    output = `z.union([${variants.map((variant) => zod(variant)).join(", ")}])`;
+    output = `z.union([${variants.map((variant) => zod(variant, undefined, loose)).join(", ")}])`;
   } else if (source.type === "array") {
     output = `z.array(${zod(source.items ?? {})})`;
   } else if (source.type === "integer") {
@@ -104,7 +115,7 @@ function zod(schema, description) {
     });
     output =
       entries.length > 0
-        ? `z.object({ ${entries.join(", ")} })`
+        ? `${loose ? "z.looseObject" : "z.object"}({ ${entries.join(", ")} })`
         : "z.record(z.string(), z.unknown())";
   } else {
     output = "z.unknown()";
@@ -171,7 +182,7 @@ for (const [path, pathItem] of Object.entries(spec.paths)) {
       const bodyDescription =
         requestBody.description ?? "JSON request body sent unchanged to Grocy.";
       shape.push(
-        `body: ${zod(media.schema, bodyDescription)}${requestBody.required ? "" : ".optional()"}`,
+        `body: ${zod(media.schema, bodyDescription, LOOSE_BODY_PATHS.has(path))}${requestBody.required ? "" : ".optional()"}`,
       );
     }
     const summary = operation.summary ?? `${method.toUpperCase()} ${path}`;
@@ -204,7 +215,7 @@ definitions.push(
 );
 catalog.set("OpenAPI", [openApiDefinition]);
 
-const output = `// Generated from openapi/grocy.openapi.json. Do not edit manually; run npm run generate:tools.\nimport * as z from "zod/v4";\n\nimport type { ApiRequest, HttpMethod, QueryValue } from "../api/client.js";\n\nexport interface ToolDefinition {\n  description: string;\n  inputSchema: z.ZodType<Record<string, unknown>>;\n  method: HttpMethod;\n  name: string;\n  request: (input: Record<string, unknown>) => ApiRequest;\n  title: string;\n}\n\nfunction tool(name: string, title: string, description: string, method: HttpMethod, path: string, inputSchema: z.ZodType<Record<string, unknown>>): ToolDefinition {\n  return { name, title, description, method, inputSchema, request: (input) => requestFor(method, path, input) };\n}\n\nfunction requestFor(method: HttpMethod, template: string, input: Record<string, unknown>): ApiRequest {\n  const path = template.replace(/\\{([^}]+)\\}/g, (_match, key: string) => encodeURIComponent(String(input[key])));\n  const query: Record<string, QueryValue> = {};\n  for (const [key, value] of Object.entries(input)) {\n    if (!template.includes("{" + key + "}") && key !== "body" && value !== undefined) query[key] = value as QueryValue;\n  }\n  return { method, path, ...(Object.keys(query).length > 0 ? { query } : {}), ...(input.body === undefined ? {} : { body: input.body }) };\n}\n\nexport const TOOL_DEFINITIONS: readonly ToolDefinition[] = [\n${definitions.join("\n")}\n];\n`;
+const output = `// Generated from openapi/grocy.openapi.json. Do not edit manually; run npm run generate:tools.\nimport * as z from "zod/v4";\n\nimport type { ApiRequest, HttpMethod, QueryValue } from "../api/client.js";\n\nexport interface ToolDefinition {\n  description: string;\n  inputSchema: z.ZodType<Record<string, unknown>>;\n  method: HttpMethod;\n  name: string;\n  request: (input: Record<string, unknown>) => ApiRequest;\n  title: string;\n}\n\nfunction tool(name: string, title: string, description: string, method: HttpMethod, path: string, inputSchema: z.ZodType<Record<string, unknown>>): ToolDefinition {\n  return { name, title, description, method, inputSchema, request: (input) => requestFor(method, path, input) };\n}\n\nfunction requestFor(method: HttpMethod, template: string, input: Record<string, unknown>): ApiRequest {\n  const path = template.replace(/\\{([^}]+)}/g, (_match, key: string) => encodeURIComponent(String(input[key])));\n  const query: Record<string, QueryValue> = {};\n  for (const [key, value] of Object.entries(input)) {\n    if (!template.includes("{" + key + "}") && key !== "body" && value !== undefined) query[key] = value as QueryValue;\n  }\n  return { method, path, ...(Object.keys(query).length > 0 ? { query } : {}), ...(input.body === undefined ? {} : { body: input.body }) };\n}\n\nexport const TOOL_DEFINITIONS: readonly ToolDefinition[] = [\n${definitions.join("\n")}\n];\n`;
 mkdirSync("src/tools", { recursive: true });
 mkdirSync("docs", { recursive: true });
 writeFileSync("src/tools/definitions.ts", output);
