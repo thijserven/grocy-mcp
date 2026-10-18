@@ -31,7 +31,7 @@ The analyzed reference architecture is documented in `docs/reference-architectur
 | Calendar                                   |     2 |
 | Printing                                   |     1 |
 
-Grocy's generic `objects/{entity}` API provides master data and equipment support. Use `grocy_get_objects_by_entity`, `grocy_post_objects_by_entity`, `grocy_get_objects_by_entity_by_objectid`, `grocy_put_objects_by_entity_by_objectid`, and `grocy_delete_objects_by_entity_by_objectid` with entities such as `products`, `locations`, `equipment`, `shopping_lists`, `quantity_units`, and custom user entities.
+Grocy's generic `objects/{entity}` API provides master data and equipment support. Use `grocy_get_objects_by_entity`, `grocy_post_objects_by_entity`, `grocy_get_objects_by_entity_by_objectid`, `grocy_put_objects_by_entity_by_objectid`, and `grocy_delete_objects_by_entity_by_objectid` with entities such as `products`, `locations`, `equipment`, `recipes_pos` (recipe ingredients), `shopping_lists`, `quantity_units`, and custom user entities. Generic write tools forward request bodies to Grocy unchanged, including fields not described in the advertised schema; Grocy validates columns and returns an error for unknown ones.
 
 All tools use the `grocy_<http-method>_<endpoint>` naming convention. For example, `grocy_post_stock_products_by_productid_consume`, `grocy_post_chores_by_choreid_execute`, `grocy_post_batteries_by_batteryid_charge`, and `grocy_post_tasks_by_taskid_complete`.
 

@@ -35,7 +35,7 @@ function requestFor(
   template: string,
   input: Record<string, unknown>,
 ): ApiRequest {
-  const path = template.replace(/\{([^}]+)\}/g, (_match, key: string) =>
+  const path = template.replace(/\{([^}]+)}/g, (_match, key: string) =>
     encodeURIComponent(String(input[key])),
   );
   const query: Record<string, QueryValue> = {};
@@ -219,7 +219,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
         .describe("A valid entity name"),
       body: z
         .union([
-          z.object({
+          z.looseObject({
             id: z.number().int().describe("Grocy id.").optional(),
             name: z.string().describe("Grocy name.").optional(),
             description: z.string().describe("Grocy description.").optional(),
@@ -316,7 +316,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
               .describe("Grocy move on open.")
               .optional(),
           }),
-          z.object({
+          z.looseObject({
             id: z.number().int().describe("Grocy id.").optional(),
             name: z.string().describe("Grocy name.").optional(),
             description: z.string().describe("Grocy description.").optional(),
@@ -386,7 +386,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
               .describe("Key/value pairs of userfields")
               .optional(),
           }),
-          z.object({
+          z.looseObject({
             id: z.number().int().describe("Grocy id.").optional(),
             name: z.string().describe("Grocy name.").optional(),
             description: z.string().describe("Grocy description.").optional(),
@@ -405,7 +405,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
               .describe("Key/value pairs of userfields")
               .optional(),
           }),
-          z.object({
+          z.looseObject({
             id: z.number().int().describe("Grocy id.").optional(),
             name: z.string().describe("Grocy name.").optional(),
             description: z.string().describe("Grocy description.").optional(),
@@ -418,7 +418,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
               .describe("Key/value pairs of userfields")
               .optional(),
           }),
-          z.object({
+          z.looseObject({
             id: z.number().int().describe("Grocy id.").optional(),
             name: z.string().describe("Grocy name.").optional(),
             name_plural: z.string().describe("Grocy name plural.").optional(),
@@ -433,7 +433,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
               .describe("Key/value pairs of userfields")
               .optional(),
           }),
-          z.object({
+          z.looseObject({
             id: z.number().int().describe("Grocy id.").optional(),
             shopping_list_id: z
               .number()
@@ -456,7 +456,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
               .describe("Key/value pairs of userfields")
               .optional(),
           }),
-          z.object({
+          z.looseObject({
             id: z.number().int().describe("Grocy id.").optional(),
             product_id: z
               .number()
@@ -497,7 +497,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
               .describe("Grocy row created timestamp.")
               .optional(),
           }),
-          z.object({
+          z.looseObject({
             product_id: z
               .number()
               .int()
@@ -514,6 +514,329 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
             last_price: z.number().describe("Grocy last price.").optional(),
             note: z.string().describe("Grocy note.").optional(),
           }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            picture_file_name: z
+              .string()
+              .describe("Grocy picture file name.")
+              .optional(),
+            base_servings: z
+              .number()
+              .int()
+              .describe("Grocy base servings.")
+              .optional(),
+            desired_servings: z
+              .number()
+              .int()
+              .describe("Grocy desired servings.")
+              .optional(),
+            not_check_shoppinglist: z
+              .number()
+              .int()
+              .describe("Grocy not check shoppinglist.")
+              .optional(),
+            type: z.string().describe("Grocy type.").optional(),
+            product_id: z
+              .number()
+              .int()
+              .describe("Grocy product id.")
+              .optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            recipe_id: z.number().int().describe("Grocy recipe id.").optional(),
+            product_id: z
+              .number()
+              .int()
+              .describe("Grocy product id.")
+              .optional(),
+            amount: z.number().describe("Grocy amount.").optional(),
+            note: z.string().describe("Grocy note.").optional(),
+            qu_id: z.number().int().describe("Grocy qu id.").optional(),
+            only_check_single_unit_in_stock: z
+              .number()
+              .int()
+              .describe("Grocy only check single unit in stock.")
+              .optional(),
+            ingredient_group: z
+              .string()
+              .describe("Grocy ingredient group.")
+              .optional(),
+            not_check_stock_fulfillment: z
+              .number()
+              .int()
+              .describe("Grocy not check stock fulfillment.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            variable_amount: z
+              .string()
+              .describe("Grocy variable amount.")
+              .optional(),
+            price_factor: z.number().describe("Grocy price factor.").optional(),
+            round_up: z.number().int().describe("Grocy round up.").optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            recipe_id: z.number().int().describe("Grocy recipe id.").optional(),
+            includes_recipe_id: z
+              .number()
+              .int()
+              .describe("Grocy includes recipe id.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            servings: z.number().int().describe("Grocy servings.").optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            due_date: z.iso.datetime().describe("Grocy due date.").optional(),
+            done: z.number().int().describe("Grocy done.").optional(),
+            done_timestamp: z.iso
+              .datetime()
+              .describe("Grocy done timestamp.")
+              .optional(),
+            category_id: z
+              .number()
+              .int()
+              .describe("Grocy category id.")
+              .optional(),
+            assigned_to_user_id: z
+              .number()
+              .int()
+              .describe("Grocy assigned to user id.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            active: z.number().int().describe("Grocy active.").optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            instruction_manual_file_name: z
+              .string()
+              .describe("Grocy instruction manual file name.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            from_qu_id: z
+              .number()
+              .int()
+              .describe("Grocy from qu id.")
+              .optional(),
+            to_qu_id: z.number().int().describe("Grocy to qu id.").optional(),
+            factor: z.number().describe("Grocy factor.").optional(),
+            product_id: z
+              .number()
+              .int()
+              .describe("Grocy product id.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            day: z.string().describe("Grocy day.").optional(),
+            type: z.string().describe("Grocy type.").optional(),
+            recipe_id: z.number().int().describe("Grocy recipe id.").optional(),
+            recipe_servings: z
+              .number()
+              .int()
+              .describe("Grocy recipe servings.")
+              .optional(),
+            note: z.string().describe("Grocy note.").optional(),
+            product_id: z
+              .number()
+              .int()
+              .describe("Grocy product id.")
+              .optional(),
+            product_amount: z
+              .number()
+              .describe("Grocy product amount.")
+              .optional(),
+            product_qu_id: z
+              .number()
+              .int()
+              .describe("Grocy product qu id.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            done: z.number().int().describe("Grocy done.").optional(),
+            section_id: z
+              .number()
+              .int()
+              .describe("Grocy section id.")
+              .optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            sort_number: z
+              .number()
+              .int()
+              .describe("Grocy sort number.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            time_info: z.string().describe("Grocy time info.").optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            entity: z.string().describe("Grocy entity.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            caption: z.string().describe("Grocy caption.").optional(),
+            type: z.string().describe("Grocy type.").optional(),
+            show_as_column_in_tables: z
+              .number()
+              .int()
+              .describe("Grocy show as column in tables.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            config: z.string().describe("Grocy config.").optional(),
+            sort_number: z
+              .number()
+              .int()
+              .describe("Grocy sort number.")
+              .optional(),
+            input_required: z
+              .number()
+              .int()
+              .describe("Grocy input required.")
+              .optional(),
+            default_value: z
+              .string()
+              .describe("Grocy default value.")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            caption: z.string().describe("Grocy caption.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            show_in_sidebar_menu: z
+              .number()
+              .int()
+              .describe("Grocy show in sidebar menu.")
+              .optional(),
+            icon_css_class: z
+              .string()
+              .describe("Grocy icon css class.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+          }),
+          z.record(z.string(), z.unknown()),
         ])
         .describe(
           "A valid entity object of the entity specified in parameter *entity*",
@@ -609,7 +932,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
         .describe("A valid object id of the given entity"),
       body: z
         .union([
-          z.object({
+          z.looseObject({
             id: z.number().int().describe("Grocy id.").optional(),
             name: z.string().describe("Grocy name.").optional(),
             description: z.string().describe("Grocy description.").optional(),
@@ -706,7 +1029,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
               .describe("Grocy move on open.")
               .optional(),
           }),
-          z.object({
+          z.looseObject({
             id: z.number().int().describe("Grocy id.").optional(),
             name: z.string().describe("Grocy name.").optional(),
             description: z.string().describe("Grocy description.").optional(),
@@ -776,7 +1099,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
               .describe("Key/value pairs of userfields")
               .optional(),
           }),
-          z.object({
+          z.looseObject({
             id: z.number().int().describe("Grocy id.").optional(),
             name: z.string().describe("Grocy name.").optional(),
             description: z.string().describe("Grocy description.").optional(),
@@ -795,7 +1118,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
               .describe("Key/value pairs of userfields")
               .optional(),
           }),
-          z.object({
+          z.looseObject({
             id: z.number().int().describe("Grocy id.").optional(),
             name: z.string().describe("Grocy name.").optional(),
             description: z.string().describe("Grocy description.").optional(),
@@ -808,7 +1131,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
               .describe("Key/value pairs of userfields")
               .optional(),
           }),
-          z.object({
+          z.looseObject({
             id: z.number().int().describe("Grocy id.").optional(),
             name: z.string().describe("Grocy name.").optional(),
             name_plural: z.string().describe("Grocy name plural.").optional(),
@@ -823,7 +1146,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
               .describe("Key/value pairs of userfields")
               .optional(),
           }),
-          z.object({
+          z.looseObject({
             id: z.number().int().describe("Grocy id.").optional(),
             shopping_list_id: z
               .number()
@@ -846,7 +1169,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
               .describe("Key/value pairs of userfields")
               .optional(),
           }),
-          z.object({
+          z.looseObject({
             id: z.number().int().describe("Grocy id.").optional(),
             product_id: z
               .number()
@@ -887,7 +1210,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
               .describe("Grocy row created timestamp.")
               .optional(),
           }),
-          z.object({
+          z.looseObject({
             product_id: z
               .number()
               .int()
@@ -904,6 +1227,329 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
             last_price: z.number().describe("Grocy last price.").optional(),
             note: z.string().describe("Grocy note.").optional(),
           }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            picture_file_name: z
+              .string()
+              .describe("Grocy picture file name.")
+              .optional(),
+            base_servings: z
+              .number()
+              .int()
+              .describe("Grocy base servings.")
+              .optional(),
+            desired_servings: z
+              .number()
+              .int()
+              .describe("Grocy desired servings.")
+              .optional(),
+            not_check_shoppinglist: z
+              .number()
+              .int()
+              .describe("Grocy not check shoppinglist.")
+              .optional(),
+            type: z.string().describe("Grocy type.").optional(),
+            product_id: z
+              .number()
+              .int()
+              .describe("Grocy product id.")
+              .optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            recipe_id: z.number().int().describe("Grocy recipe id.").optional(),
+            product_id: z
+              .number()
+              .int()
+              .describe("Grocy product id.")
+              .optional(),
+            amount: z.number().describe("Grocy amount.").optional(),
+            note: z.string().describe("Grocy note.").optional(),
+            qu_id: z.number().int().describe("Grocy qu id.").optional(),
+            only_check_single_unit_in_stock: z
+              .number()
+              .int()
+              .describe("Grocy only check single unit in stock.")
+              .optional(),
+            ingredient_group: z
+              .string()
+              .describe("Grocy ingredient group.")
+              .optional(),
+            not_check_stock_fulfillment: z
+              .number()
+              .int()
+              .describe("Grocy not check stock fulfillment.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            variable_amount: z
+              .string()
+              .describe("Grocy variable amount.")
+              .optional(),
+            price_factor: z.number().describe("Grocy price factor.").optional(),
+            round_up: z.number().int().describe("Grocy round up.").optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            recipe_id: z.number().int().describe("Grocy recipe id.").optional(),
+            includes_recipe_id: z
+              .number()
+              .int()
+              .describe("Grocy includes recipe id.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            servings: z.number().int().describe("Grocy servings.").optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            due_date: z.iso.datetime().describe("Grocy due date.").optional(),
+            done: z.number().int().describe("Grocy done.").optional(),
+            done_timestamp: z.iso
+              .datetime()
+              .describe("Grocy done timestamp.")
+              .optional(),
+            category_id: z
+              .number()
+              .int()
+              .describe("Grocy category id.")
+              .optional(),
+            assigned_to_user_id: z
+              .number()
+              .int()
+              .describe("Grocy assigned to user id.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            active: z.number().int().describe("Grocy active.").optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            instruction_manual_file_name: z
+              .string()
+              .describe("Grocy instruction manual file name.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            from_qu_id: z
+              .number()
+              .int()
+              .describe("Grocy from qu id.")
+              .optional(),
+            to_qu_id: z.number().int().describe("Grocy to qu id.").optional(),
+            factor: z.number().describe("Grocy factor.").optional(),
+            product_id: z
+              .number()
+              .int()
+              .describe("Grocy product id.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            day: z.string().describe("Grocy day.").optional(),
+            type: z.string().describe("Grocy type.").optional(),
+            recipe_id: z.number().int().describe("Grocy recipe id.").optional(),
+            recipe_servings: z
+              .number()
+              .int()
+              .describe("Grocy recipe servings.")
+              .optional(),
+            note: z.string().describe("Grocy note.").optional(),
+            product_id: z
+              .number()
+              .int()
+              .describe("Grocy product id.")
+              .optional(),
+            product_amount: z
+              .number()
+              .describe("Grocy product amount.")
+              .optional(),
+            product_qu_id: z
+              .number()
+              .int()
+              .describe("Grocy product qu id.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            done: z.number().int().describe("Grocy done.").optional(),
+            section_id: z
+              .number()
+              .int()
+              .describe("Grocy section id.")
+              .optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            sort_number: z
+              .number()
+              .int()
+              .describe("Grocy sort number.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            time_info: z.string().describe("Grocy time info.").optional(),
+            userfields: z
+              .record(z.string(), z.unknown())
+              .describe("Key/value pairs of userfields")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            entity: z.string().describe("Grocy entity.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            caption: z.string().describe("Grocy caption.").optional(),
+            type: z.string().describe("Grocy type.").optional(),
+            show_as_column_in_tables: z
+              .number()
+              .int()
+              .describe("Grocy show as column in tables.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+            config: z.string().describe("Grocy config.").optional(),
+            sort_number: z
+              .number()
+              .int()
+              .describe("Grocy sort number.")
+              .optional(),
+            input_required: z
+              .number()
+              .int()
+              .describe("Grocy input required.")
+              .optional(),
+            default_value: z
+              .string()
+              .describe("Grocy default value.")
+              .optional(),
+          }),
+          z.looseObject({
+            id: z.number().int().describe("Grocy id.").optional(),
+            name: z.string().describe("Grocy name.").optional(),
+            caption: z.string().describe("Grocy caption.").optional(),
+            description: z.string().describe("Grocy description.").optional(),
+            show_in_sidebar_menu: z
+              .number()
+              .int()
+              .describe("Grocy show in sidebar menu.")
+              .optional(),
+            icon_css_class: z
+              .string()
+              .describe("Grocy icon css class.")
+              .optional(),
+            row_created_timestamp: z.iso
+              .datetime()
+              .describe("Grocy row created timestamp.")
+              .optional(),
+          }),
+          z.record(z.string(), z.unknown()),
         ])
         .describe(
           "A valid entity object of the entity specified in parameter *entity*",

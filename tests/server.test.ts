@@ -80,6 +80,91 @@ describe("Grocy MCP server", () => {
     );
   });
 
+  it("forwards generic entity write bodies unfiltered", () => {
+    const body = { recipe_id: 1, product_id: 2, qu_id: 3, amount: 1.5 };
+    for (const toolName of [
+      "grocy_post_objects_by_entity",
+      "grocy_put_objects_by_entity_by_objectid",
+    ]) {
+      const definition = TOOL_DEFINITIONS.find(({ name }) => name === toolName);
+      if (!definition) {
+        throw new Error(`Expected generic entity write tool ${toolName}`);
+      }
+      const parsed = definition.inputSchema.safeParse({
+        entity: "recipes_pos",
+        ...(toolName.startsWith("grocy_put") ? { objectId: 1 } : {}),
+        body,
+      });
+      expect(parsed.success).toBe(true);
+      if (parsed.success) {
+        expect(parsed.data.body).toEqual(body);
+      }
+    }
+    const createObject = TOOL_DEFINITIONS.find(
+      ({ name }) => name === "grocy_post_objects_by_entity",
+    );
+    if (!createObject) {
+      throw new Error("Expected generic create-object tool definition");
+    }
+    expect(createObject.request({ entity: "recipes_pos", body })).toEqual({
+      method: "POST",
+      path: "/objects/recipes_pos",
+      body,
+    });
+    const publicSchema = JSON.stringify(
+      z.toJSONSchema(createObject.inputSchema),
+    );
+    expect(publicSchema).toContain("recipe_id");
+    expect(publicSchema).toContain("only_check_single_unit_in_stock");
+  });
+
+  it("still validates entity-specific bodies strictly", () => {
+    const definition = TOOL_DEFINITIONS.find(
+      ({ name }) => name === "grocy_post_stock_products_by_productid_consume",
+    );
+    const parsed = definition?.inputSchema.safeParse({
+      productId: 3,
+      body: { amount: "not-a-number" },
+    });
+    expect(parsed?.success).toBe(false);
+  });
+
+  it("preserves unrecognized generic entity fields through SDK input validation", async () => {
+    const request = vi.fn(() => Promise.resolve({ created_object_id: "42" }));
+    const server = createMcpServer({
+      apiClient: { request } as unknown as GrocyClient,
+    });
+    const client = new Client({ name: "test-client", version: "1.0.0" });
+    const [clientTransport, serverTransport] =
+      InMemoryTransport.createLinkedPair();
+    await Promise.all([
+      server.connect(serverTransport),
+      client.connect(clientTransport),
+    ]);
+    closers.push(
+      () => client.close(),
+      () => server.close(),
+    );
+
+    const body = {
+      recipe_id: 2,
+      product_id: 16,
+      amount: 2,
+      qu_id: 3,
+      note: "ingredient row",
+    };
+    const result = await client.callTool({
+      name: "grocy_post_objects_by_entity",
+      arguments: { entity: "recipes_pos", body },
+    });
+    expect(result.isError ?? false).toBe(false);
+    expect(request).toHaveBeenCalledWith({
+      method: "POST",
+      path: "/objects/recipes_pos",
+      body,
+    });
+  });
+
   it("exposes the generated tool catalog and translates upstream errors into MCP tool errors", async () => {
     const request = vi.fn(() =>
       Promise.reject(new Error("Grocy API returned 401: invalid API key")),
